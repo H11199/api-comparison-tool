@@ -13,9 +13,9 @@ const chalk = require('chalk');
 const { parseUrlString, buildUrlWithValues, parseUrlFiles } = require('./utils/parser');
 const { compareJson } = require('./utils/json-comparator');
 
-console.log(chalk.bold.blue('\n═══════════════════════════════════════════════════════════'));
+console.log(chalk.bold.blue('\n==========================================================='));
 console.log(chalk.bold.blue('API COMPARISON TOOL - VALIDATION TESTS'));
-console.log(chalk.bold.blue('═══════════════════════════════════════════════════════════\n'));
+console.log(chalk.bold.blue('===========================================================\n'));
 
 let totalTests = 0;
 let passedTests = 0;
@@ -24,14 +24,14 @@ let failedTests = 0;
 function runTest(testName, testFn) {
     totalTests++;
     try {
-        console.log(chalk.cyan(`\n📋 Test ${totalTests}: ${testName}`));
+        console.log(chalk.cyan(`\nTest ${totalTests}: ${testName}`));
         testFn();
         passedTests++;
-        console.log(chalk.green('   ✓ PASSED'));
+        console.log(chalk.green('   PASSED'));
         return true;
     } catch (error) {
         failedTests++;
-        console.log(chalk.red('   ✗ FAILED'));
+        console.log(chalk.red('   FAILED'));
         console.log(chalk.red(`   Error: ${error.message}`));
         return false;
     }
@@ -214,17 +214,17 @@ runTest('URL with Nested Variable Reference', () => {
 });
 
 // Summary
-console.log(chalk.bold.blue('\n═══════════════════════════════════════════════════════════'));
+console.log(chalk.bold.blue('\n==========================================================='));
 console.log(chalk.bold.blue('TEST SUMMARY'));
-console.log(chalk.bold.blue('═══════════════════════════════════════════════════════════'));
+console.log(chalk.bold.blue('==========================================================='));
 console.log(`Total Tests: ${chalk.cyan(totalTests)}`);
 console.log(`Passed: ${chalk.green(passedTests)} (${((passedTests/totalTests)*100).toFixed(1)}%)`);
 console.log(`Failed: ${chalk.red(failedTests)}`);
 
 if (failedTests === 0) {
-    console.log(chalk.bold.green('\n✓ All tests passed! The tool is working correctly.\n'));
+    console.log(chalk.bold.green('\nAll tests passed! The tool is working correctly.\n'));
     process.exit(0);
 } else {
-    console.log(chalk.bold.red(`\n✗ ${failedTests} test(s) failed. Please review the errors above.\n`));
+    console.log(chalk.bold.red(`\n${failedTests} test(s) failed. Please review the errors above.\n`));
     process.exit(1);
 }

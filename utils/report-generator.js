@@ -1,20 +1,12 @@
-/**
- * Report Generator Utility
- * Generates HTML and console reports for API comparison tests
- */
-
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const Table = require('cli-table3');
 
-/**
- * Generate console report
- */
 function generateConsoleReport(testResults, config) {
-    console.log('\n' + chalk.bold.blue('═'.repeat(80)));
+    console.log('\n' + chalk.bold.blue('='.repeat(80)));
     console.log(chalk.bold.blue('API COMPARISON TEST RESULTS'));
-    console.log(chalk.bold.blue('═'.repeat(80)));
+    console.log(chalk.bold.blue('='.repeat(80)));
     console.log(`Environment: ${chalk.cyan(config.environment.baseUrl)}`);
     console.log(`Date: ${chalk.cyan(new Date().toISOString())}`);
     console.log(`Total Test Cases: ${chalk.cyan(testResults.length)}\n`);
@@ -42,8 +34,7 @@ function generateConsoleReport(testResults, config) {
         console.log(`  URL: ${chalk.gray(result.newUrl)}`);
         console.log(`  Status: ${getStatusColor(result.newResponse.status)} | Time: ${chalk.cyan(result.newResponse.responseTime + 'ms')}`);
 
-        // Result
-        console.log(`\n${chalk.bold('Result:')} ${result.passed ? chalk.green('✓ PASS') : chalk.red('✗ FAIL')}`);
+        console.log(`\n${chalk.bold('Result:')} ${result.passed ? chalk.green('PASS') : chalk.red('FAIL')}`);
         
         if (result.comparisonResult && result.comparisonResult.report) {
             console.log(`  ${result.comparisonResult.report.message}`);
@@ -85,9 +76,6 @@ function generateConsoleReport(testResults, config) {
     return { passed, failed, total, percentage };
 }
 
-/**
- * Get colored status code
- */
 function getStatusColor(status) {
     if (status >= 200 && status < 300) {
         return chalk.green(status + ' OK');
@@ -99,9 +87,6 @@ function getStatusColor(status) {
     return chalk.gray(status);
 }
 
-/**
- * Generate HTML report
- */
 function generateHtmlReport(testResults, config, summary) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0] + '_' + 
                      new Date().toTimeString().split(' ')[0].replace(/:/g, '-');
@@ -207,9 +192,6 @@ function generateHtmlReport(testResults, config, summary) {
     return reportPath;
 }
 
-/**
- * Generate HTML for a single test case
- */
 function generateTestCaseHtml(result) {
     const variablesHtml = result.variables && Object.keys(result.variables).length > 0 ? `
         <div class="variables">

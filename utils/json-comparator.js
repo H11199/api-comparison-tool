@@ -1,13 +1,5 @@
-/**
- * JSON Comparator Utility
- * Deep comparison of JSON responses
- */
-
 const diff = require('deep-diff');
 
-/**
- * Compare two JSON responses
- */
 function compareJson(oldData, newData, options = {}) {
     const result = {
         isMatch: false,
@@ -47,9 +39,6 @@ function compareJson(oldData, newData, options = {}) {
     return result;
 }
 
-/**
- * Normalize data for comparison
- */
 function normalizeData(data, options) {
     if (!data) return data;
 
@@ -68,9 +57,6 @@ function normalizeData(data, options) {
     return normalized;
 }
 
-/**
- * Remove specified fields from object
- */
 function removeFields(obj, fieldsToRemove) {
     if (Array.isArray(obj)) {
         return obj.map(item => removeFields(item, fieldsToRemove));
@@ -89,9 +75,6 @@ function removeFields(obj, fieldsToRemove) {
     return obj;
 }
 
-/**
- * Sort arrays recursively for consistent comparison
- */
 function sortArrayRecursively(arr) {
     if (!Array.isArray(arr)) return arr;
 
@@ -113,9 +96,6 @@ function sortArrayRecursively(arr) {
     });
 }
 
-/**
- * Format a difference for human-readable output
- */
 function formatDifference(change, oldData, newData) {
     const path = change.path ? change.path.join('.') : 'root';
     
@@ -163,9 +143,6 @@ function formatDifference(change, oldData, newData) {
     }
 }
 
-/**
- * Generate a detailed comparison report
- */
 function generateComparisonReport(comparison) {
     const report = {
         status: comparison.isMatch ? 'PASS' : 'FAIL',
@@ -189,9 +166,6 @@ function generateComparisonReport(comparison) {
     return report;
 }
 
-/**
- * Compare responses with detailed analysis
- */
 function compareResponses(oldResponse, newResponse, options = {}) {
     const result = {
         statusMatch: oldResponse.status === newResponse.status,
@@ -224,9 +198,6 @@ function compareResponses(oldResponse, newResponse, options = {}) {
     return result;
 }
 
-/**
- * Format differences for console output
- */
 function formatDifferencesForConsole(differences) {
     if (!differences || differences.length === 0) {
         return '  No differences found';

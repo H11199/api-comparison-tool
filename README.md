@@ -6,6 +6,10 @@
 
 When migrating from `MasterDataFetchServlet` to `MasterDataFetchV2Servlet`, I needed a way to verify that both implementations return the same data. Manually comparing responses for dozens of API endpoints was tedious and error-prone. So I built this tool.
 
+## Demo Video
+
+Watch the tool in action: [API Comparison Tool Demo](https://drive.google.com/file/d/1zsVNmjFz0e4xi81Yd9LnTmpdU-PgDNbi/view?usp=sharing)
+
 ## What It Does
 
 This tool takes your old and new API URLs, executes both, and tells you if the responses match. Simple as that.
@@ -273,10 +277,6 @@ All tests should pass. If they don't, something's broken - open an issue.
 
 Found a bug? Have an idea? Open an issue or submit a PR. I'm open to improvements!
 
-## License
-
-ISC
-
 ## Need Help?
 
 Check out:
@@ -286,4 +286,4 @@ Check out:
 
 ---
 
-Built this during a late-night migration sprint. Hope it helps you too! ☕
+Built this at late-night. Hope it helps you too! ☕

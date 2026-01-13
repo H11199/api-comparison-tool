@@ -1,8 +1,3 @@
-/**
- * HTTP Client Utility
- * Handles authentication and HTTP requests with session management
- */
-
 const axios = require('axios');
 const https = require('https');
 const tough = require('tough-cookie');
@@ -57,10 +52,6 @@ class HttpClient {
         );
     }
 
-    /**
-     * Authenticate with the server
-     * This is a basic implementation - adjust based on your actual authentication mechanism
-     */
     async authenticate() {
         try {
             console.log('Authenticating with server...');
@@ -92,14 +83,13 @@ class HttpClient {
                 );
 
                 if (loginResponse.status === 200) {
-                    console.log('✓ Authentication successful');
+                    console.log('Authentication successful');
                     this.isAuthenticated = true;
                 } else {
                     throw new Error('Authentication failed');
                 }
             } else {
-                // No authentication needed or already authenticated
-                console.log('✓ Already authenticated or no authentication required');
+                console.log('Already authenticated or no authentication required');
                 this.isAuthenticated = true;
             }
 
@@ -113,9 +103,6 @@ class HttpClient {
         }
     }
 
-    /**
-     * Fetch data from a URL with retry logic
-     */
     async fetch(url, options = {}) {
         const fullUrl = url.startsWith('http') ? url : this.baseUrl + url;
         let lastError;
@@ -163,9 +150,6 @@ class HttpClient {
         };
     }
 
-    /**
-     * Fetch JSON data
-     */
     async fetchJson(url) {
         const response = await this.fetch(url);
         
@@ -188,16 +172,10 @@ class HttpClient {
         return response;
     }
 
-    /**
-     * Sleep utility for retry delays
-     */
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    /**
-     * Close the HTTP client
-     */
     close() {
         // Clean up resources if needed
         this.isAuthenticated = false;

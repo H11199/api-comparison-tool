@@ -1,13 +1,3 @@
-/**
- * Parser Utility
- * Parses JavaScript concatenation strings to extract variables and build URL mappings
- */
-
-/**
- * Parse a JavaScript URL concatenation string and extract variable information
- * Example: /api/test.FIELD1-" + var1 + "~isExact.FIELD2-" + var2 + ".json
- * Returns: { variables: ['var1', 'var2'], fieldMapping: { var1: 'FIELD1', var2: 'FIELD2' }, ... }
- */
 function parseUrlString(urlString) {
     const result = {
         staticParts: [],
@@ -102,9 +92,6 @@ function parseUrlString(urlString) {
     return result;
 }
 
-/**
- * Build final URL by replacing variables with actual values
- */
 function buildUrlWithValues(urlTemplate, variableValues) {
     let finalUrl = urlTemplate;
     
@@ -131,9 +118,6 @@ function buildUrlWithValues(urlTemplate, variableValues) {
     return finalUrl;
 }
 
-/**
- * Extract base URL for fetching initial data
- */
 function extractBaseUrl(parsedNewUrl, baseUrl) {
     if (parsedNewUrl.baseUrl) {
         // Remove field selection from base URL if present
@@ -144,16 +128,10 @@ function extractBaseUrl(parsedNewUrl, baseUrl) {
     return null;
 }
 
-/**
- * Escape special regex characters
- */
 function escapeRegex(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-/**
- * Read and parse URL files
- */
 function parseUrlFiles(oldContent, newContent) {
     const oldLines = oldContent.split('\n').filter(line => line.trim());
     const newLines = newContent.split('\n').filter(line => line.trim());
