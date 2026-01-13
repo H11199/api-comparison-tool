@@ -1,0 +1,3 @@
+1. /content/hdfc_commonforms/api/masterdatafetchv2.PL.BRAN_CHA_MAP.json/CITY.DSACODE.json?DSACODE="+agentDsaCodeVal+"&CITY="+cityId+"&isExact=DSACODE,CITY
+
+2. /content/hdfc_commonforms/api/masterdatafetchv2.PL.ADOBE_IRR_PF_MASTER_BASIS_DAP.json/EMPLOYEE_CAT.LOWER_INCOME.HIGHER_INCOME.COMBINEDKEY.PF.MAXLOANAMT.IRR.json?EMPLOYEE_CAT=" + category + "&LOWER_INCOME=" + nearest_lower_income + "&isExact=EMPLOYEE_CAT,LOWER_INCOME

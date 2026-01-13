@@ -1,0 +1,3 @@
+1. /content/hdfc_pl_forms/api/FetchMasterData.PL.BRAN_CHA_MAP.DSACODE-" + agentDsaCodeVal+ "~isExact.CITY-" + cityId + "~isExact.json/CITY.DSACODE.json
+
+2. /content/hdfc_pl_forms/api/FetchMasterData.PL.ADOBE_IRR_PF_MASTER_BASIS_DAP.EMPLOYEE_CAT-" + category + ".LOWER_INCOME-" + nearest_lower_income + ".isExact-true.json/EMPLOYEE_CAT.LOWER_INCOME.HIGHER_INCOME.COMBINEDKEY.PF.MAXLOANAMT.IRR.json

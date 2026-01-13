@@ -1,0 +1,24 @@
+{
+  "environment": {
+    "baseUrl": "https://65.1.90.86",
+    "username": "bsomaraj@adobe.com",
+    "password": "ufX7GGDNsjJ^#5W3"
+  },
+  "options": {
+    "timeout": 30000,
+    "ignoreFieldOrder": true,
+    "ignoreFields": [],
+    "maxRetries": 2,
+    "delayBetweenTests": 500,
+    "strictSSL": false
+  },
+  "files": {
+    "oldUrls": "data/old.txt",
+    "newUrls": "data/new.txt"
+  },
+  "output": {
+    "format": "both",
+    "reportDirectory": "reports",
+    "consoleColors": true
+  }
+}
