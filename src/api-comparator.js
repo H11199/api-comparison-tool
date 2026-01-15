@@ -103,8 +103,10 @@ async function runTestCase(testCase, httpClient, config) {
         testCase: testCase.lineNumber,
         product: testCase.product,
         master: testCase.master,
-        baseUrl: null,
-        variables: {},
+        oldBaseUrl: null,
+        newBaseUrl: null,
+        oldVariables: {},
+        newVariables: {},
         oldUrl: null,
         newUrl: null,
         oldResponse: null,
@@ -114,25 +116,43 @@ async function runTestCase(testCase, httpClient, config) {
     };
 
     try {
-        const baseUrl = extractBaseUrl(testCase.newParsed, config.environment.baseUrl);
-        result.baseUrl = baseUrl;
+        // Extract base URLs from both old and new parsed URLs
+        const oldBaseUrl = extractBaseUrl(testCase.oldParsed, config.environment.baseUrl);
+        const newBaseUrl = extractBaseUrl(testCase.newParsed, config.environment.baseUrl);
         
-        console.log(`  Base URL: ${baseUrl}`);
+        result.oldBaseUrl = oldBaseUrl;
+        result.newBaseUrl = newBaseUrl;
+        
+        console.log(`  Old Base URL: ${oldBaseUrl}`);
+        console.log(`  New Base URL: ${newBaseUrl}`);
 
-        console.log('  Fetching base data for variable extraction...');
-        const baseResponse = await httpClient.fetchJson(baseUrl);
+        // Fetch old base data and extract variables for old URL
+        console.log('  Fetching old base data for variable extraction...');
+        const oldBaseResponse = await httpClient.fetchJson(oldBaseUrl);
 
-        if (!baseResponse.success || !baseResponse.data) {
-            throw new Error(`Failed to fetch base data: ${baseResponse.error || 'Unknown error'}`);
+        if (!oldBaseResponse.success || !oldBaseResponse.data) {
+            throw new Error(`Failed to fetch old base data: ${oldBaseResponse.error || 'Unknown error'}`);
         }
 
-        const variableValues = extractVariableValues(baseResponse.data, testCase.fieldMapping);
-        result.variables = variableValues;
-        
-        console.log('  Variables extracted:', JSON.stringify(variableValues, null, 2));
+        const oldVariableValues = extractVariableValues(oldBaseResponse.data, testCase.oldParsed.fieldMapping);
+        result.oldVariables = oldVariableValues;
+        console.log('  Old variables extracted:', JSON.stringify(oldVariableValues, null, 2));
 
-        const oldUrlFinal = buildUrlWithValues(testCase.oldUrl, variableValues);
-        const newUrlFinal = buildUrlWithValues(testCase.newUrl, variableValues);
+        // Fetch new base data and extract variables for new URL
+        console.log('  Fetching new base data for variable extraction...');
+        const newBaseResponse = await httpClient.fetchJson(newBaseUrl);
+
+        if (!newBaseResponse.success || !newBaseResponse.data) {
+            throw new Error(`Failed to fetch new base data: ${newBaseResponse.error || 'Unknown error'}`);
+        }
+
+        const newVariableValues = extractVariableValues(newBaseResponse.data, testCase.newParsed.fieldMapping);
+        result.newVariables = newVariableValues;
+        console.log('  New variables extracted:', JSON.stringify(newVariableValues, null, 2));
+
+        // Build complete URLs with their respective variables
+        const oldUrlFinal = buildUrlWithValues(testCase.oldUrl, oldVariableValues);
+        const newUrlFinal = buildUrlWithValues(testCase.newUrl, newVariableValues);
         
         result.oldUrl = config.environment.baseUrl + oldUrlFinal;
         result.newUrl = config.environment.baseUrl + newUrlFinal;
@@ -192,11 +212,20 @@ function extractVariableValues(data, fieldMapping) {
     }
 
     for (const [varName, fieldName] of Object.entries(fieldMapping)) {
+        // Try exact match first
         if (firstRecord.hasOwnProperty(fieldName)) {
             values[varName] = firstRecord[fieldName];
         } else {
-            console.warn(`  Field ${fieldName} not found in base data for variable ${varName}`);
-            values[varName] = '';
+            // Try case-insensitive match
+            const fieldNameLower = fieldName.toLowerCase();
+            const matchingKey = Object.keys(firstRecord).find(key => key.toLowerCase() === fieldNameLower);
+            
+            if (matchingKey) {
+                values[varName] = firstRecord[matchingKey];
+            } else {
+                console.warn(`  Field ${fieldName} not found in base data for variable ${varName}`);
+                values[varName] = '';
+            }
         }
     }
 

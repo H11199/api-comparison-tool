@@ -11,6 +11,9 @@ function parseUrlString(urlString) {
 
     // Remove line number prefix if present (e.g., "1. ")
     urlString = urlString.replace(/^\d+\.\s*/, '').trim();
+    
+    // Strip leading and trailing quotes that may be present in the URL
+    urlString = urlString.replace(/^["']|["']$/g, '');
 
     // Split by query parameters first
     const [pathPart, queryPart] = urlString.split('?');
@@ -52,15 +55,16 @@ function parseUrlString(urlString) {
         if (oldUrlMatch) {
             result.product = oldUrlMatch[1];
             result.master = oldUrlMatch[2];
-            // Base URL is product.master.json
+            // Keep base URL in original FetchMasterData format
             result.baseUrl = basePath.split('FetchMasterData.')[0] + 
-                           'masterdatafetchv2.' + result.product + '.' + result.master + '.json';
+                           'FetchMasterData.' + result.product + '.' + result.master + '.json';
         }
     }
 
     // Parse old URL format to extract field mappings
     // Pattern: FIELDNAME-" + varName + "~isExact or FIELDNAME-" + varName + "
-    const oldFieldPattern = /([A-Z_]+)-"\s*\+\s*([^+]+?)\s*\+\s*"(?:~isExact)?/g;
+    // Updated to match field names with both uppercase and lowercase letters
+    const oldFieldPattern = /([A-Za-z_]+)-"\s*\+\s*([^+]+?)\s*\+\s*"(?:~isExact)?/g;
     while ((match = oldFieldPattern.exec(pathPart)) !== null) {
         const fieldName = match[1];
         const varName = match[2].trim();
@@ -72,7 +76,10 @@ function parseUrlString(urlString) {
 
     // Parse query parameters if present
     if (queryPart) {
-        const queryVariablePattern = /([A-Z_]+)="\s*\+\s*([^+&]+?)\s*\+\s*"/g;
+        // Updated regex to handle both complete and incomplete concatenation patterns
+        // Matches: FIELD=" + varName + " OR FIELD=" + varName
+        // Also handles variable names with quotes inside them
+        const queryVariablePattern = /([A-Za-z_]+)="\s*\+\s*([^&]+?)(?:\s*\+\s*"|$|&)/g;
         while ((match = queryVariablePattern.exec(queryPart)) !== null) {
             const fieldName = match[1];
             const varName = match[2].trim();
@@ -97,13 +104,20 @@ function buildUrlWithValues(urlTemplate, variableValues) {
     
     // Remove line number prefix if present
     finalUrl = finalUrl.replace(/^\d+\.\s*/, '').trim();
+    
+    // Strip leading and trailing quotes
+    finalUrl = finalUrl.replace(/^["']|["']$/g, '');
 
     // Replace each variable with its value
     for (const [varName, value] of Object.entries(variableValues)) {
         // Handle different concatenation patterns
         const patterns = [
+            // Complete pattern: " + varName + "
             new RegExp(`"\\s*\\+\\s*${escapeRegex(varName)}\\s*\\+\\s*"`, 'g'),
-            new RegExp(`\\+\\s*${escapeRegex(varName)}\\s*\\+`, 'g')
+            // Middle pattern: + varName +
+            new RegExp(`\\+\\s*${escapeRegex(varName)}\\s*\\+`, 'g'),
+            // Incomplete trailing pattern: " + varName (at end of string or before &)
+            new RegExp(`"\\s*\\+\\s*${escapeRegex(varName)}(?=\\s*$|\\s*&)`, 'g')
         ];
         
         for (const pattern of patterns) {
